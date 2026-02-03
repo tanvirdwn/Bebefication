@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Important Question</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background-color: #fff7ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .container {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    color: #f28c6a;
+    margin-bottom: 20px;
+  }
+
+  .plea {
+    font-size: 1rem;
+    color: #d87c5a;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  button {
+    padding: 14px 34px;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    touch-action: manipulation;
+  }
+
+  #yes {
+    background-color: #f4a261;
+    color: white;
+    box-shadow: 0 6px 15px rgba(244,162,97,0.35);
+    transition: transform 0.3s ease;
+  }
+
+  #no {
+    background-color: #b5b5b5;
+    color: white;
+  }
+
+  .sticker {
+    font-size: 40px;
+    margin-bottom: 10px;
+    opacity: 0;
+    transition: all 0.4s ease;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="sticker" id="sticker">( •︵• )</div>
+  <h1 id="question">Will you marry me?</h1>
+  <div class="plea" id="plea">please say yes</div>
+
+  <div class="buttons">
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+  </div>
+</div>
+
+<script>
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const question = document.getElementById("question");
+  const plea = document.getElementById("plea");
+  const sticker = document.getElementById("sticker");
+
+  let noCount = 0;
+  let yesScale = 1;
+  let roaming = false;
+
+  function safePosition() {
+    const yesRect = yesBtn.getBoundingClientRect();
+    let x, y, safe;
+
+    do {
+      x = Math.random() * (window.innerWidth - 120);
+      y = Math.random() * (window.innerHeight - 60);
+
+      safe =
+        x + 120 < yesRect.left ||
+        x > yesRect.right ||
+        y + 60 < yesRect.top ||
+        y > yesRect.bottom;
+    } while (!safe);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
+
+  function escapeNo() {
+    noCount++;
+
+    // grow YES
+    yesScale += 0.15;
+    yesBtn.style.transform = `scale(${yesScale})`;
+
+    // show sad sticker + plea
+    sticker.style.opacity = 1;
+    plea.style.opacity = 1;
+
+    // special text at 6th NO
+    if (noCount === 6) {
+      question.textContent = "You don’t want snuggles?";
+    }
+
+    if (!roaming) {
+      noBtn.style.position = "absolute";
+      roaming = true;
+      setInterval(safePosition, 1200);
+    }
+
+    safePosition();
+  }
+
+  noBtn.addEventListener("touchstart", escapeNo);
+  noBtn.addEventListener("mouseover", escapeNo);
+  noBtn.addEventListener("click", escapeNo);
+
+  yesBtn.addEventListener("click", () => {
+    sticker.textContent = "( •‿• )";
+    sticker.style.opacity = 1;
+    plea.style.opacity = 0;
+
+    document.body.innerHTML = `
+      <div style="
+        height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        font-family:'Poppins', sans-serif;
+        color:#f28c6a;
+      ">
+        <h1>
+          Congratulations<br>
+          You have been bebefied
+        </h1>
+      </div>
+    `;
+  });
+</script>
+
+</body>
